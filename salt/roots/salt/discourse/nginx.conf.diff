@@ -1,0 +1,4 @@
+28a29,31
+>     # For discourse
+>     server_names_hash_bucket_size 64;
+> 
