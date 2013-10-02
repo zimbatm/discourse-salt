@@ -90,11 +90,15 @@ Vagrant.configure("2") do |config|
     aws.tags = {
       'Name' => 'salt-master'
     }
+    # Make sure salt-master gives access to port TCP 4505
+    aws.security_groups = ['default', 'salt-master']
 
+    override.vm.hostname = 'salt-master'
+    override.vm.box_url = 'https://s3.amazonaws.com/mediacore-public/boxes/ec2-precise64-aws.box'
     override.ssh.private_key_path = ENV["AWS_SSH_PRIVKEY"]
   end
 
-  config.vm.provider :virtualbox do |vbox|
-    vbox.vm.box_url = 'https://s3.amazonaws.com/mediacore-public/boxes/ec2-precise64.box'
+  config.vm.provider :virtualbox do |_, override|
+    override.vm.box_url = 'https://s3.amazonaws.com/mediacore-public/boxes/ec2-precise64.box'
   end
 end
