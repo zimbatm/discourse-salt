@@ -75,7 +75,7 @@ discourse-repo:
     - runas: discourse
     - force: True
     - require:
-      - pkg: git
+      - pkg: discourse-deps
       - file: /var/www
 
 /var/www/discourse/.ruby-version:
