@@ -78,11 +78,11 @@ discourse-repo:
       - pkg: discourse-deps
       - file: /var/www
 
-/var/www/discourse/.ruby-version:
-  file.managed:
-    - contents: {{ ruby_version }}
-    - require:
-      - git: discourse-repo
+# /var/www/discourse/.ruby-version:
+#   file.managed:
+#     - contents: {{ ruby_version }}
+#     - require:
+#       - git: discourse-repo
 
 /var/www/discourse/config/database.yml:
   file.managed:
@@ -90,12 +90,16 @@ discourse-repo:
     - template: jinja
     - require:
       - git: discourse-repo
+    - require_in:
+      - cmd: app-db-setup
 
 /var/www/discourse/config/redis.yml:
   file.managed:
     - source: salt://discourse/redis.yml
     - require:
       - git: discourse-repo
+    - require_in:
+      - cmd: app-db-setup
 
 /var/www/discourse/config/discourse.pill:
   file.managed:
@@ -103,6 +107,8 @@ discourse-repo:
     - template: jinja
     - require:
       - git: discourse-repo
+    - require_in:
+      - cmd: app-db-setup
 
 /var/www/discourse/config/environments/{{ env }}.rb:
   file.managed:
@@ -110,6 +116,8 @@ discourse-repo:
     - template: jinja
     - require:
       - git: discourse-repo
+    - require_in:
+      - cmd: app-db-setup
 
 # FIXME: Only run when the repo is updated
 app-bundle:
@@ -156,6 +164,8 @@ app-assets-setup:
   file.managed:
     - source: salt://discourse/bluepill.conf.jinja
     - template: jinja
+    - watch_in:
+      - discourse-bluepill
 
 discourse-bluepill:
   service.running
