@@ -17,8 +17,12 @@ nginx:
       - pkg: nginx
 
 # Not needed with the upstream package
-/etc/nginx/sites-enabled/default:
+old-nginx-config:
   file.absent:
+    - names:
+      - /etc/nginx/sites-enabled/default
+      - /etc/nginx/conf.d/default.conf
+      - /etc/nginx/conf.d/example_ssl.conf
     - watch_in:
       - service: nginx
 

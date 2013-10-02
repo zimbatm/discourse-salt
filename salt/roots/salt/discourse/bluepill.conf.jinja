@@ -10,17 +10,21 @@ respawn
 respawn limit 10 5
 umask 022
 
-uid discourse
-gid discourse
-
-env RUBY_GC_MALLOC_LIMIT=90000000
-env RAILS_ROOT=/var/www/discourse
-env RAILS_ENV={{ pillar['discourse']['env'] }}
-env NUM_WEBS={{ grains['num_cpus'] }}
+setuid discourse
+setgid discourse
 
 console log
 
-start script
-  . /etc/profile.d/rvm.sh
-  bluepill --no-privileged -c ~/.bluepill load /var/www/discourse/config/discourse.pill
-end script
+env HOME=/home/discourse
+env NUM_WEBS={{ grains['num_cpus'] }}
+env RAILS_ENV={{ pillar['discourse']['env'] }}
+env RAILS_ROOT=/var/www/discourse
+env RUBY_GC_MALLOC_LIMIT=90000000
+
+export HOME
+export NUM_WEBS
+export RAILS_ENV
+export RAILS_ROOT
+export RUBY_GC_MALLOC_LIMIT
+
+exec bash -c ". /etc/profile.d/rvm.sh && exec bluepill --no-privileged load $RAILS_ROOT/config/discourse.pill"
