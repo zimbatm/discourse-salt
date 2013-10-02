@@ -4,6 +4,13 @@
 # resolved, then the minion will fail to start.
 master: localhost
 
+grains:
+  roles:
+    - discourse
+    - salt-master
+  deployment: datacenter4
+  cabinet: 13
+
 # Set the port used by the master reply and authentication server
 #master_port: 4506
 
