@@ -1,6 +1,9 @@
 # vim: ft=ruby
 #
-# `vagrant plugins install vagrant-salt`
+# Make sure to have Vagrant 1.3+ and that the vagrant-salt plugin is not
+# installed:
+#
+# `vagrant plugins uninstall vagrant-salt`
 
 Vagrant.configure("2") do |config|
   config.vm.box = 'ec2-precise64'
@@ -10,6 +13,7 @@ Vagrant.configure("2") do |config|
 
   ## For local master, mount your file_roots
   config.vm.synced_folder "salt/roots/", "/srv/"
+
   config.vm.network "forwarded_port",
     guest: 80,
     host: 8080,
@@ -32,14 +36,12 @@ Vagrant.configure("2") do |config|
     salt.master_key = "salt/key/master.pem"
     salt.master_pub = "salt/key/master.pub"
 
-    # Bootstrap Options Below
-    # See options here:
-    #  http://bootstrap.saltstack.org
-
-    # If you need bleeding edge salt
+    # Stable is 0.16.4 at the moment, which is outdated in many aspects
     salt.install_type = "stable"
-    # salt.install_type = "git"
-    # salt.install_args = "develop"
+    # If you need bleeding edge salt
+    #salt.install_type = "git"
+    #salt.install_args = "v0.17.0"
+    #salt.install_args = "develop"
 
     # Install a master on this machine
     salt.install_master = true
@@ -57,27 +59,12 @@ Vagrant.configure("2") do |config|
     # Normally we want to run state.highstate to provision the machine
     salt.run_highstate = true
 
-    # If you are using a master with minion setup, you may accept keys
-    # If keys have already been except, it will pass
-    # DEPRECATED
-    salt.accept_keys = true
-
     # Default will not install / update salt binaries if they are present
     # Use this option to always install
-    salt.always_install = true
+    # salt.always_install = true
 
-    # Gives more output, such as fromt bootstrap script
+    # Gives more output, such as from the bootstrap script
     salt.verbose = true
-
-    # If you need an updated bootstrap script, or a custom one
-    salt.bootstrap_script = "salt/custom-bootstrap-salt.sh"
-
-    # Pass extra flags to bootstrap script
-    salt.bootstrap_options = "-D"
-
-    # If your distro does not use /tmp, you can use another dir
-    # salt.temp_config_dir = "/tmp"
-
   end
 
   config.vm.provider :aws do |aws, override|
